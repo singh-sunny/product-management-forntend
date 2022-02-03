@@ -1,0 +1,26 @@
+$label-success-color: rgb(10, 180, 27);
+$label-error-color: rgb(218, 30, 40);
+$label-warn-color: rgb(255, 128, 0);
+
+@mixin label-dimension ($width, $height, $border-radius) {
+    width: $width;
+    height: $height;
+    border-radius: $border-radius;
+    padding: 5px;
+    display: inline-block;
+}
+
+.success {
+    background-color: $label-success-color;
+    @include label-dimension(55px, 22px, 15px);
+}
+
+.error {
+    background-color: $label-error-color;
+    @include label-dimension(55px, 25px, 15px);
+}
+
+.warn {
+    background-color: $label-warn-color;
+    @include label-dimension(55px, 22px, 15px);
+}

@@ -1,0 +1,62 @@
+$list-container-border-color: rgb(222, 225, 230);
+$list-container-border-radius: 15px;
+$list-header-color: rgb(238, 238, 238);
+
+$list-container-height: 500px;
+$list-header-height: 50px;
+$list-item-height: 111px;
+
+@mixin displayTable($layout) {
+    display: table;
+    table-layout: $layout;
+}
+
+@mixin displayTableCell($layout, $textAlign, $verticalAlign) {
+    display:table-cell;
+    table-layout: $layout;
+    text-align: $textAlign;
+    vertical-align: $verticalAlign;
+}
+
+
+.list-container {
+    border: 2px solid $list-container-border-color;
+    border-radius: $list-container-border-radius;
+    height: $list-container-height;
+    background-color: white;
+    margin-top: 15px;
+
+
+    .list-header {
+        background-color: $list-header-color;
+        border-top-left-radius: $list-container-border-radius;
+        border-top-right-radius: $list-container-border-radius;
+        height: $list-header-height;
+        width: 100%;
+        @include displayTable(fixed);
+
+        > * {
+            @include displayTableCell(fixed, center, middle);
+        }
+    }
+
+    .list-wrapper {
+        list-style-type:none;
+        height: ($list-container-height - $list-header-height);
+        overflow-y: auto;
+        margin-top: 0px;
+        padding: 0px;
+    }
+
+    .list-item {
+        @include displayTable(fixed);
+        width: 100%;
+        height: $list-item-height;
+        border-bottom: 2px solid rgb(231, 231, 231);
+        > * {
+            @include displayTableCell(fixed, center, middle);
+        }
+    }
+
+    
+}

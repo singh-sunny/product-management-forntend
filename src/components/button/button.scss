@@ -1,0 +1,23 @@
+$button-bg-color: rgb(224, 60, 49);
+$button-text-color: rgb(255,255,255);
+
+
+.standard-button {
+    background-color: $button-bg-color;
+    width: 150px;
+    height: 40px;
+    color: $button-text-color;
+    border:none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-small {
+    background-color: $button-bg-color;
+    width: 150px;
+    height: 30px;
+    color: $button-text-color;
+    border:none;
+    border-radius: 5px;
+    cursor: pointer;
+}
