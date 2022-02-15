@@ -1,9 +1,12 @@
 
-import {useState} from 'react';
+import React, {useState, Suspense} from 'react';
 import './App.scss';
 import ProductList from './pages/products/product-list';
-import ProductCreate from './pages/products/product-create';
-import ProductEdit from './pages/products/product-edit';
+//import ProductCreate from './pages/products/product-create';
+//import ProductEdit from './pages/products/product-edit';
+import {Spinner} from './components/spinner';
+const ProductCreate = React.lazy(() => import('./pages/products/product-create'));
+const ProductEdit = React.lazy(() => import('./pages/products/product-edit'));
 
 const APP_PAGES = {
   ProductList: 'ProductList',
@@ -33,15 +36,27 @@ function App() {
 const renderPage = (pageDetails, navigate, setNotification) => {
   let Page = null;
 
+  const props = {
+    setNotification: setNotification,
+    navigateTo: navigate,
+    APP_PAGES: APP_PAGES
+  }
+
   switch(pageDetails.page) {
     case APP_PAGES.ProductList:
-      Page = <ProductList setNotification={setNotification} navigateTo={navigate} APP_PAGES={APP_PAGES} {...pageDetails.params} />
+      Page = <ProductList {...props} {...pageDetails.params} />
       break;
     case APP_PAGES.ProductEdit:
-      Page = <ProductEdit setNotification={setNotification} navigateTo={navigate} APP_PAGES={APP_PAGES} {...pageDetails.params} />
+      //Page = <ProductEdit {...props} {...pageDetails.params} />
+      Page = (<Suspense fallback={<Spinner />}>
+        <ProductEdit {...props} {...pageDetails.params} />
+      </Suspense>)
       break;
     case APP_PAGES.ProductCreate:
-      Page = <ProductCreate setNotification={setNotification} navigateTo={navigate} APP_PAGES={APP_PAGES} {...pageDetails.params} />
+      //Page = <ProductCreate {...props} {...pageDetails.params} />
+      Page = (<Suspense fallback={<Spinner />}>
+        <ProductCreate {...props} {...pageDetails.params} />
+      </Suspense>)
       break;
   }
 

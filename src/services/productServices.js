@@ -4,12 +4,10 @@ import {config} from '../config';
 const url = config.serviceBaseURL + 'products';
 
 const fetchProducts = (params) => {
-    console.log('params ' + params);
     let uri = url;
 
     if(params) {
         uri = uri + `/${params}`;
-        console.log('uri ' + uri);
     }
     
     

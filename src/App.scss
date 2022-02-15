@@ -48,6 +48,8 @@
   border-radius: 11px;
   color: white;
   margin-right: 5px;
+  margin-bottom: 5px;
+  font-size: 12px;
   span:first-child {
       display: inline-block;
       margin-right: 10px;
@@ -66,6 +68,7 @@
   z-index: 1;
   text-align: center;
   padding-top: 15px;
+  z-index: 10;
   
   &.notification-success {
     background-color: rgb(219, 255, 219);
@@ -76,3 +79,39 @@
   }
 
 }
+
+.page {
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  padding: 15px;
+
+  margin-top: 60px;
+  border-radius: 10px;
+}
+
+.App {
+  padding-bottom: 15px;
+
+  .modal {
+    z-index: 1000;
+
+    .modal-header {
+      height: 45px;
+      text-align: center;
+      border-bottom: 2px solid #f2f2f2;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 15px;
+      font-size: 20px;
+      font-weight: bold;
+
+      .close-modal {
+        float: right;
+        font-weight: normal;
+        cursor: pointer;
+      }
+    }
+  }
+}
+

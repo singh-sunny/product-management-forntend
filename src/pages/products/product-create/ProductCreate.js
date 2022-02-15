@@ -3,6 +3,7 @@ import React, {useState, useEffect, useRef} from 'react';
 //components
 import Nav from '../../../components/navbar';
 import {Product} from '../../../components/productDetails';
+import {FullScreenSpinner} from '../../../components/spinner';
 
 //store
 import {createProduct} from '../../../stores/productStore';
@@ -20,6 +21,7 @@ import './products.scss';
 const ProductCreate = (props) => {
     const [showValidationError, setShowValidationError] = useState(false);
     const [validationErrors, setValidationErrors] = useState(false)
+    const [showFullScreenSpinner, setShowFullScreenSpinner] = useState(false)
     const userInput = useRef({});
     const timerID = useRef(null);
     const currentVarientsRef = useRef({});
@@ -53,7 +55,7 @@ const ProductCreate = (props) => {
         }
 
          
-        submitProduct(output, userInput.current.faq.getUserInput(), props.setNotification, props.navigateTo, props.APP_PAGES);
+        submitProduct(output, userInput.current.faq.getUserInput(), props.setNotification, props.navigateTo, props.APP_PAGES, setShowFullScreenSpinner);
         
      };
 
@@ -63,16 +65,18 @@ const ProductCreate = (props) => {
                 pageTitle={LocStrings.addProduct}
                 pageControls={navControls(saveButtonClick)}
                 showValidationError={showValidationError}
+                onBackClick={() => { props.navigateTo(props.APP_PAGES.ProductList) }}
             />
             
-            <div className="page">
+            <div className="page product-create"  style={{backgroundColor: '#FFFFFF'}}>
                 <Product isCreateFlow={true} currentVarientsRef={currentVarientsRef}  getUserInputRef={userInput} validationErrors = {validationErrors}/>
             </div>
+            {showFullScreenSpinner ? <FullScreenSpinner /> : null}
         </React.Fragment>
     );
 };
 
-const submitProduct = (input, faq, setNotification, navigateTo, APP_PAGES) => {
+const submitProduct = (input, faq, setNotification, navigateTo, APP_PAGES, setShowFullScreenSpinner) => {
     const f = new FormData();
 
     const userData = {varients: [], faq: faq.created}
@@ -89,19 +93,23 @@ const submitProduct = (input, faq, setNotification, navigateTo, APP_PAGES) => {
 
     f.append('productDetails', JSON.stringify(userData));
 
+
+    setShowFullScreenSpinner(true);
     createProduct(f)
     .then(() => {
+        setShowFullScreenSpinner(false);
         setNotification('success: Product created successfully') // do better
         setTimeout(() => {
             setNotification(false)
-            navigateTo(APP_PAGES.ProductList);
+            //navigateTo(APP_PAGES.ProductList);
+            window.location.reload();
         }, 3000)
     })
     .catch((e) => {
+        setShowFullScreenSpinner(false);
         setNotification('error: Something went wrong') // do better
         setTimeout(() => {
             setNotification(false)
-            
         }, 3000)
     })
 }

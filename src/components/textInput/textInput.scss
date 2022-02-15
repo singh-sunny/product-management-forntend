@@ -1,4 +1,4 @@
-$border-color: rgb(239, 239, 239);
+$border-color: rgb(238, 238, 238);
 
 @mixin commonProperties() {
     margin-bottom: 35px;
@@ -9,18 +9,20 @@ $border-color: rgb(239, 239, 239);
 
 
 .input-text {
-    min-height: 55px;
+    height: 55px;
     width: 50px;
     @include commonProperties();
     padding: 5px;
     &.with-label {
         display: block;
     }
-
+    position: relative;
+    z-index: 1;
+    background-color: transparent;
 }
 
 .input-textarea {
-    min-height: 70px;
+    height: 85px;
     width: 70px;
     padding: 10px;
     @include commonProperties();
@@ -37,9 +39,28 @@ $border-color: rgb(239, 239, 239);
     left: 20px;
     padding-left: 10px;
     padding-right: 10px;
+    z-index: 2;
 }
 
 
 .wrapper{
     position: relative;
+}
+
+
+.placeholder {
+    color: gray;
+    position: absolute;
+    font-size: 14px;
+    top: 15px;
+    left: 10px;
+    z-index: 0;
+}
+
+.reqired-field {
+    color: red;
+}
+
+.invalid {
+    border-color: red;
 }

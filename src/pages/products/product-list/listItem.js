@@ -1,13 +1,25 @@
 import {Label, LABEL_TYPES} from '../../../components/labels';
 import {LocStrings} from '../../../i18n/i18n'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
-const listItem = (items) => {
+
+const listItem = (items, productClickHandler) => {
 
     const currency = '$';
 
     if(!items.length) {
         return;
     }
+
+    const listClickHandler = (e) => {
+        if(e.target.classList.contains('product-item') || e.target.tagName === 'path') {
+            e.preventDefault();
+            const productID = e.currentTarget.getAttribute('id')
+            productClickHandler(productID)
+        }
+    }
+
     const cb = (props) => {
         const output = [];
         items.forEach((i) => {
@@ -18,9 +30,9 @@ const listItem = (items) => {
                 let detail = v.color ? v.color : '';
                 detail = detail +  (v.size ? ` ${v.size}` : '');
     
-                const li = (<li key={v._id} className={props.className || ''}>
+                const li = (<li key={v._id} className={props.className || ''} onClick={listClickHandler} id={`${parentId}`} >
                     <div>{<img src={v.media[0].path} />}</div>
-                    <div><a className="product" id={`${parentId}`}>{v.productTitle}</a></div>
+                    <div><a style={{cursor: 'pointer'}} className="product-item" id={`${parentId}`} >{v.productTitle}</a></div>
                     <div>{v.skuID}</div>
                     <div>
                         {
@@ -31,7 +43,9 @@ const listItem = (items) => {
                     </div>
                     <div>{`${currency}${v.listPrice}`}</div>
                     <div>{detail}</div>
-                    <div></div>
+                    <div >
+                        <div className="product-item" style={{display: 'inline', cursor: 'pointer'}} id={`${parentId}`} ><FontAwesomeIcon icon={faPencilAlt} /></div>
+                    </div>
                     
                 </li>);
     

@@ -1,4 +1,5 @@
 import LocalizedStrings from 'react-localization';
+import { faQuran } from '@fortawesome/free-solid-svg-icons';
 
 let strings = new LocalizedStrings({
  en:{
@@ -29,7 +30,10 @@ let strings = new LocalizedStrings({
    varients: "Varients",
    defaultVarient: "Default Varient",
    deleteVarientWarning: "Deleting varient will remove all its details, are you sure you want to do this?",
-   deleteVarientWarningTitle: "Delete Varient"
+   deleteVarientWarningTitle: "Delete Varient",
+   pageLoadError: "Error in loading data. Please trygain later",
+   faqQuestion: "Question",
+   faqAnswer: "Answer"
  },
  it: {
    

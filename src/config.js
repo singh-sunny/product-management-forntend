@@ -1,7 +1,7 @@
 const config = {
     env: {
         development: {
-            serviceBaseURL: 'http://localhost:3000/api/'
+            serviceBaseURL: 'http://localhost:3001/api/'
         },
         production: {
 

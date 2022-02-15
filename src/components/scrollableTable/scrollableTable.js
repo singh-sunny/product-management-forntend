@@ -1,6 +1,7 @@
 import './scrollableTable.scss';
 import { ListeHeader } from  './ListHeader';
 import { List } from  './List';
+import SlidingWindowScroll from './BetterList'
 
 
 /**
@@ -11,7 +12,8 @@ const ScrollableTable = (props) => {
     return (
         <div className="list-container">
             <ListeHeader {...props} />
-            <List {...props} />
+            {/* <List {...props} /> */}
+            <SlidingWindowScroll {...props} />
         </div>
     );
 };

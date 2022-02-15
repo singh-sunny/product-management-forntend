@@ -1,40 +1,52 @@
 $nav-color: rgb(255,255,255);
+$nav-height: 50px;
 
-.nav {
-    height: 50px;
-    display: flex;
-    background-color: $nav-color;
-    padding: 10px;
+.nav-wrapper {
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    z-index: 4;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
 
-    .nav-sections {
-        &.fixed-control {
-            display: flex;
-            justify-content: start;
-            align-items: center;
-            flex-basis: 30%;
-
-            .page-title {
-                margin-left: 15px;
+    .nav {
+        height: $nav-height;
+        display: flex;
+        background-color: $nav-color;
+        padding: 10px;
+    
+        .nav-sections {
+            &.fixed-control {
+                display: flex;
+                justify-content: start;
+                align-items: center;
+                flex-basis: 30%;
+    
+                .page-title {
+                    margin-left: 15px;
+                }
             }
-        }
-
-        &.page-control {
-            display: flex;
-            justify-content: end;
-            align-items: center;
-            flex-basis: 70%;
-            position: relative;
-
-            .input-error {
-                position: absolute;
-                background-color: rgb(0,0,0);
-                color: rgb(255,255,255);
-                border-radius: 5px;
-                padding: 10px;
-                top: 55px;
+    
+            &.page-control {
+                display: flex;
+                justify-content: end;
+                align-items: center;
+                flex-basis: 70%;
+                position: relative;
+    
+                .input-error {
+                    position: absolute;
+                    background-color: rgb(0,0,0);
+                    color: rgb(255,255,255);
+                    border-radius: 5px;
+                    padding: 10px;
+                    top: 55px;
+                }
             }
         }
     }
 }
+
+
+
 
 

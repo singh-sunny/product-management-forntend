@@ -4,6 +4,7 @@ import React, {useState, useEffect} from 'react';
 import Nav from '../../../components/navbar';
 import {Spinner} from '../../../components/spinner';
 import {ScrollableTable, ListDesigns} from '../../../components/scrollableTable';
+import {Button, ButtonTypes} from '../../../components/button';
 
 //utils
 import {useDebounce} from '../../../utils/customHooks';
@@ -26,23 +27,66 @@ const ProductList = (props) => {
 
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isError, setIsError] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const debouncedSearchTerm = useDebounce(searchText, 2000);
+    const debouncedSearchTerm = useDebounce(searchText, 500);
 
-    useEffect(async () => {
-        const params = debouncedSearchTerm.trim().length ? `?skuID=${debouncedSearchTerm}&productTitle=${debouncedSearchTerm}` : ''
-        setIsLoading(true);
-        const productList = await getProducts(params);
-        setProducts(productList);
-        setIsLoading(false);
-    }, [debouncedSearchTerm]);
+    const loadData = async () => {
+        const text = debouncedSearchTerm.trim();
+        let query = '';
 
-    const tableClickHandler = (e) => {
-        if(e.target.classList.contains('product')) {
-            e.preventDefault();
-            const productID = e.target.getAttribute('id')
-            props.navigateTo(props.APP_PAGES.ProductEdit, {id: productID});
+        let maxSkuID = -1;
+        if(text) {
+            query = `?skuID=${debouncedSearchTerm}&productTitle=${debouncedSearchTerm}&filter=true&maxSkuID=${maxSkuID}`;
         }
+        else {
+            query = `?maxSkuID=${maxSkuID}&list=true`;
+        }
+
+        setIsLoading(true);
+        try {
+            const productList = await getProducts(query);
+            setProducts(productList);
+            setIsLoading(false);
+        }
+        catch(e) {
+            setIsLoading(false);
+            setIsError(true);
+        }
+    }
+
+    const loadMore = async () => {
+        const text = debouncedSearchTerm.trim();
+        let query = '';
+
+        let skuID = products.length ? products[products.length - 1]['varients']['skuID'] : -1;
+
+        if(text) {
+            query = `?skuID=${debouncedSearchTerm}&productTitle=${debouncedSearchTerm}&filter=true&maxSkuID=${skuID}`;
+        }
+        else {
+            query = `?maxSkuID=${skuID}&list=true`;
+        }
+
+        setIsLoading(true);
+        try {
+            const productList = await getProducts(query);
+            setProducts((prev) => {
+                return ([...prev, ...productList]);
+            });
+            setIsLoading(false);
+        }
+        catch(e) {
+            setIsLoading(false);
+            setIsError(true);
+            
+        }
+    }
+
+    useEffect(loadData, [debouncedSearchTerm]);
+
+    const productClickHandler = (id, selectedSKUID) => {
+        props.navigateTo(props.APP_PAGES.ProductEdit, {id: id, selectedSKUID: selectedSKUID});
     }
     
     return (
@@ -51,31 +95,45 @@ const ProductList = (props) => {
                 pageTitle={LocStrings.homePageTitle}
                 pageControls={navControls(clickHandler)}
             />
-            <div className="page">
-                {
-                    isLoading ? <Spinner /> :
-                    (
-                        <>
-                            <input 
-                                type="text" 
-                                value={searchText}
-                                className="search-box"
-                                onChange={(e) => { setSearchText(e.target.value) }} 
-                                placeholder={LocStrings.productSearchInputBoxPlaceHolder} 
-                            />
-                            <div className="tableWrapper" onClick={(e) => {tableClickHandler(e)}}>
-                                <ScrollableTable 
-                                    headers={productListHeader}
-                                    itemsRender={productListItem(products)}
-                                    infiniteLoad={true}
-                                    design={ListDesigns.HomePage}
-                                />
+            {
+                
+                (
+                    <>
+                        {
+                            isError ? (<div className="page-load-error-message">{LocStrings.pageLoadError}</div>)
+                            :
+                            <div className="page product-list">
+                                <div className="search-load-controls">
+                                    <input 
+                                        type="text" 
+                                        value={searchText}
+                                        className="search-box"
+                                        onChange={(e) => { setSearchText(e.target.value) }} 
+                                        placeholder={LocStrings.productSearchInputBoxPlaceHolder} 
+                                    />
+                                    {isLoading ? <Spinner /> : null}
+                                    <Button 
+                                        btnType={ButtonTypes.SMALL_BUTTON}
+                                        buttonLabel={'Load More'}
+                                        onClick={loadMore}
+                                    />
+                                </div>
+                                
+                                <div className="tableWrapper">
+                                    <ScrollableTable 
+                                        headers={productListHeader}
+                                        itemsRender={productListItem(products, productClickHandler)}
+                                        infiniteLoad={true}
+                                        design={ListDesigns.HomePage}
+                                        list={products}
+                                        listItemClickHandler={productClickHandler}
+                                    />
+                                </div>
                             </div>
-                            
-                        </>
-                    )
-                }
-            </div>
+                        }
+                    </>
+                )
+            }
         </React.Fragment>
     );
 };

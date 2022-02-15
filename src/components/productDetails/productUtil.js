@@ -22,8 +22,16 @@ const pickCurrentVarients = (curentVarients, allVarients) => {
     return cv;
 }
 
-const getDefaultVarient = (varients) => {
-    const def = varients.filter((v) => { return v.isDefault; });
+const getDefaultVarient = (varients, skuID) => {
+
+    if(skuID) {
+        var def = varients.filter((v) => { return (v.skuID === skuID); });
+    }
+    else {
+        var def = varients.filter((v) => { return v.isDefault; });
+    }
+
+    
     return def[0] ? def[0] : varients[0];
 }
 

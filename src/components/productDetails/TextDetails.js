@@ -16,6 +16,7 @@ const TextDetails = (props) => {
     const [listPrice, setlistPrice] = useState(isCreateFlow ? '' : varient.listPrice.toString());
     const [HSNCode, setHSNCode] = useState(isCreateFlow ? '' : varient.HSNCode.toString());
     const [isActive, setIsActive] = useState(isCreateFlow ? true : varient.isActive);
+    const [isSubmit, setIsSubmit] = useState(false);
 
     const SKUIdOnChange = (e) => {setSKUId(e.target.value)};
     const produtTitleOnChange = (e) => {setprodutTitle(e.target.value)};
@@ -53,6 +54,8 @@ const TextDetails = (props) => {
         input.color = varient.color;
         input.size = varient.size;
 
+        setIsSubmit(true);
+
         return {error: error, productDetails: input};
     }
     
@@ -60,21 +63,27 @@ const TextDetails = (props) => {
         <div className="section text-section">
             <div className="header-row">
                 <h2 className="text-section-header">{LocStrings.productDetails}</h2>
-                <Switch uncheckedIcon={false} checkedIcon={false} checked={isActive} onChange={(checked, event, id) => {setIsActive(checked)}}  />
+                <div className="product-active-status">
+                    <Switch uncheckedIcon={false} checkedIcon={false} checked={isActive} onChange={(checked, event, id) => {setIsActive(checked)}}  />
+                    <span>
+                        {isActive ? 'Active' : 'Inactive'}
+                    </span>
+                </div>
+                
             </div>
-            <Input value={skuID} onChange={SKUIdOnChange} placeholder={LocStrings.SKUID} hasLabel={true} labelText={LocStrings.SKUID} />
-            <Input value={produtTitle} onChange={produtTitleOnChange} placeholder={LocStrings.produtTitle} hasLabel={true} labelText={LocStrings.produtTitle} />
-            <Textarea value={productDescription} onChange={productOnChange} placeholder={LocStrings.productDescription} hasLabel={true} labelText={LocStrings.productDescription} />
+            <Input showInvalid={isSubmit} isRequired={true} value={skuID} onChange={SKUIdOnChange} placeholder={LocStrings.SKUID} hasLabel={true} labelText={LocStrings.SKUID} />
+            <Input showInvalid={isSubmit} isRequired={true} value={produtTitle} onChange={produtTitleOnChange} placeholder={LocStrings.produtTitle} hasLabel={true} labelText={LocStrings.produtTitle} />
+            <Textarea showInvalid={isSubmit} isRequired={true} value={productDescription} onChange={productOnChange} placeholder={LocStrings.productDescription} hasLabel={true} labelText={LocStrings.productDescription} />
             
             <div className="two-col-container">
                 <div className="col-left">
-                    <Input value={discountedPrice} onChange={discountedOnChange} placeholder={LocStrings.discountedPrice} hasLabel={false}  />
-                    <Input value={EANCode} onChange={EANChange} placeholder={LocStrings.EANCode} hasLabel={true} labelText={LocStrings.EANCode} />
-                    <Input value={taxPercentage} onChange={taxPercentageOnChange} placeholder={LocStrings.taxPercentage} hasLabel={false}  />
+                    <Input showInvalid={isSubmit} isRequired={true} value={discountedPrice} onChange={discountedOnChange} placeholder={LocStrings.discountedPrice} hasLabel={false}  />
+                    <Input showInvalid={isSubmit} value={EANCode} onChange={EANChange} placeholder={LocStrings.EANCode} hasLabel={true} labelText={LocStrings.EANCode} />
+                    <Input showInvalid={isSubmit} value={taxPercentage} onChange={taxPercentageOnChange} placeholder={LocStrings.taxPercentage} hasLabel={false}  />
                 </div>
                 <div className="col-right">
-                    <Input value={listPrice} onChange={listPricedOnChange} placeholder={LocStrings.listPrice} hasLabel={false}  />
-                    <Input value={HSNCode} onChange={HSNCodeOnChange} placeholder={LocStrings.HSNCode} hasLabel={true} labelText={LocStrings.HSNCode} />
+                    <Input showInvalid={isSubmit} isRequired={true} value={listPrice} onChange={listPricedOnChange} placeholder={LocStrings.listPrice} hasLabel={false}  />
+                    <Input showInvalid={isSubmit} isRequired={true} value={HSNCode} onChange={HSNCodeOnChange} placeholder={LocStrings.HSNCode} hasLabel={true} labelText={LocStrings.HSNCode} />
                 </div>
             </div>
         </div> 

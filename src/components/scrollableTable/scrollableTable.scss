@@ -2,7 +2,7 @@ $list-container-border-color: rgb(222, 225, 230);
 $list-container-border-radius: 15px;
 $list-header-color: rgb(238, 238, 238);
 
-$list-container-height: 500px;
+$list-container-height: 600px;
 $list-header-height: 50px;
 $list-item-height: 111px;
 
@@ -18,11 +18,15 @@ $list-item-height: 111px;
     vertical-align: $verticalAlign;
 }
 
+.no-data {
+    text-align: center;
+    padding: 15px;
+}
+
 
 .list-container {
     border: 2px solid $list-container-border-color;
     border-radius: $list-container-border-radius;
-    height: $list-container-height;
     background-color: white;
     margin-top: 15px;
 
@@ -46,6 +50,7 @@ $list-item-height: 111px;
         overflow-y: auto;
         margin-top: 0px;
         padding: 0px;
+        margin-bottom: 0px;
     }
 
     .list-item {
@@ -56,6 +61,7 @@ $list-item-height: 111px;
         > * {
             @include displayTableCell(fixed, center, middle);
         }
+        margin-bottom: 0px;
     }
 
     

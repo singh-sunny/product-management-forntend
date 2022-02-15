@@ -4,6 +4,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import Nav from '../../../components/navbar';
 import {Spinner} from '../../../components/spinner';
 import {Product} from '../../../components/productDetails';
+import {FullScreenSpinner} from '../../../components/spinner';
 
 //store
 import {getProducts, updateProduct} from '../../../stores/productStore';
@@ -27,6 +28,7 @@ const ProductEdit = (props) => {
     const userInput = useRef({});
     const timerID = useRef(null);
     const currentAndDeletedVarientsRef = useRef({});
+    const [showFullScreenSpinner, setShowFullScreenSpinner] = useState(false);
     
     
 
@@ -63,7 +65,7 @@ const ProductEdit = (props) => {
             return;
         }
 
-        submitProduct(output, userInput.current.faq.getUserInput(), deletedVarients, props.id, props.setNotification, props.navigateTo, props.APP_PAGES);
+        submitProduct(output, userInput.current.faq.getUserInput(), deletedVarients, props.id, props.setNotification, props.navigateTo, props.APP_PAGES, setShowFullScreenSpinner);
         
      };
 
@@ -72,26 +74,34 @@ const ProductEdit = (props) => {
              <Nav 
                 pageTitle={LocStrings.editProductPageTitle}
                 pageControls={navControls(saveButtonClick)}
+                showValidationError={showValidationError}
+                onBackClick={() => {
+                    props.navigateTo(props.APP_PAGES.ProductList) 
+                }}
             />
             
             {
                 isLoading ?
                 <Spinner /> : 
-                <div className="page">
+                <>
+                <div className="page product-edit" style={{backgroundColor: '#FFFFFF'}}>
                     <Product 
                         product={productDetails} 
                         getUserInputRef={userInput}
                         validationErrors = {validationErrors}
                         currentAndDeletedVarientsRef={currentAndDeletedVarientsRef}
+                        selectedSKUID={props.selectedSKUID}
                     />
                 </div>
+                {showFullScreenSpinner ? <FullScreenSpinner /> : null}
+                </>
             }
         </React.Fragment>
     );
 };
 
 
-const submitProduct = (input, faq, deletedVarient, id, setNotification, navigateTo, APP_PAGES) => {
+const submitProduct = (input, faq, deletedVarient, id, setNotification, navigateTo, APP_PAGES, setShowFullScreenSpinner) => {
     const reqInput = {varients: {}, faq: {}};
     let deleteMediaForUpdatedVarients = [];
     let deleteMediaForDeletedVarients = [];
@@ -150,18 +160,22 @@ const submitProduct = (input, faq, deletedVarient, id, setNotification, navigate
         reqInput.varients.addMediaForUpdatedVarients = addMediaForUpdatedVarients;
     }
 
+    setShowFullScreenSpinner(true);
     formData.append('productDetails', JSON.stringify(reqInput))
 
     updateProduct(formData, id)
     .then(() => {
+        setShowFullScreenSpinner(false);
         setNotification('success: Product edited successfully') // do better
 
         setTimeout(() => {
             setNotification(false);
-            navigateTo(APP_PAGES.ProductList);
+            //navigateTo(APP_PAGES.ProductList);
+            window.location.reload();
         }, 3000)
     })
     .catch((e) => {
+        setShowFullScreenSpinner(false);
         setNotification('error: Something went wrong') // do better
 
         setTimeout(() => {

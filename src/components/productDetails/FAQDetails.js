@@ -112,11 +112,11 @@ const FAQ = (props) => {
     return (
         <div className="faq">
             <div className="qa">
-                <Input klass={'faq-question'} value={que} onChange={(e) => {setQue(e.target.value)}} />
-                <Textarea klass={'faq-answer'} value={ans} onChange={(e) => {setAns(e.target.value)}} />  
+                <Input klass={'faq-question'} value={que} onChange={(e) => {setQue(e.target.value)}} placeholder={LocStrings.faqQuestion} />
+                <Textarea klass={'faq-answer'} value={ans} onChange={(e) => {setAns(e.target.value)}} placeholder={LocStrings.faqAnswer}/>  
             </div>
             <div className="delete-icon-wrapper" id={id} onClick={(e) => { props.deleteFAQ(e.currentTarget.getAttribute('id')) }}>
-                <FontAwesomeIcon id={id} icon={faTrashAlt} className="delete-icon" />
+                <FontAwesomeIcon id={id} icon={faTrashAlt} className="delete-icon" style={{color: 'red'}} />
             </div>
         </div>
     );

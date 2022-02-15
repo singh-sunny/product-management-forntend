@@ -6,22 +6,27 @@ import './navbar.scss';
 
 const Nav = (props) => {
     return (
-            <nav className="nav">
-                <div className="nav-sections fixed-control">
-                    <FontAwesomeIcon icon={faChevronLeft} />
-                    <div className="page-title">{props.pageTitle}</div>
-                </div>
-                <div className="nav-sections page-control">
-                    {props.pageControls}
+            <div className="nav-wrapper">
+                <nav className="nav">
+                    <div className="nav-sections fixed-control">
+                        <div style={{cursor: 'pointer'}}>
+                            <FontAwesomeIcon icon={faChevronLeft} onClick={props.onBackClick}/>
+                        </div>
+                        <div className="page-title">{props.pageTitle}</div>
+                    </div>
+                    <div className="nav-sections page-control">
+                        {props.pageControls}
 
-                    {
-                        props.showValidationError ? 
-                        <div className="input-error">{LocStrings.invalidInput}</div> :
-                        null
-                    }  
-                    
-                </div>
-            </nav>
+                        {
+                            props.showValidationError ? 
+                            <div className="input-error">{LocStrings.invalidInput}</div> :
+                            null
+                        }  
+                        
+                    </div>
+                </nav>
+            </div>
+            
     );
 };
 

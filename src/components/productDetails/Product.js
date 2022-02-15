@@ -13,7 +13,7 @@ const Product = (props) => {
     const [varients, setVarients] = useState(props.isCreateFlow ? [getNewVarientObject()] : product.varients); // real objects
     const [currentVarients, setCurrentVarients] = useState(props.isCreateFlow ? varients : getCombinations(product.varients)); // array of varient combination labels
     const [showAddVarientModal, setShowAddVarientModal] = useState(false);
-    const [selectedVarient, setSelectedVarient] = useState(props.isCreateFlow ? varients[0]._id : getDefaultVarient(product.varients)._id);
+    const [selectedVarient, setSelectedVarient] = useState(props.isCreateFlow ? varients[0]._id : getDefaultVarient(product.varients, props.selectedSKUID)._id);
 
     if(props.isCreateFlow) {
         props.currentVarientsRef.current.getCurrentVarients = () => {
@@ -89,6 +89,19 @@ const saveCB = (setSelectedVarient, setCurrentVarients, setVarients, varients, n
     let newCurrentVarients = [];
     let newVarients = [];
 
+    if(!newVarientCombinations) {
+        
+
+        setVarients((prev) => {
+            const a = [getNewVarientObject()];
+            setCurrentVarients(a);
+            setSelectedVarient(a[0]._id)
+
+            return a;
+        });
+        
+        return;
+    }
 
     newVarientCombinations.forEach((nv) => {
         let isMatch = false;

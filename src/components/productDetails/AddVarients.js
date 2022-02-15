@@ -20,13 +20,16 @@ const AddVarient = (props) => {
     const [sizeVarient, setSizeVarient] = useState(initSizeVarients);
     const [defaultVarient, setDefaultVarient] = useState(null);
     const defaultSelectionRef = useRef();
+    const [deleteVarientConfirmation, setDeleteVarientConfirmation] = useState(false);
+    const deleteConfirmationCB = useRef(() => {});
     
 
     return (
+        <>
         <Modal>
             <div className="add-varients">
-                <div className="add-varient-header">
-                    {LocStrings.varients}
+                <div className="modal-header">
+                    <span>{LocStrings.varients}</span>
                     <span className="close-button" onClick={props.closeModal}>x</span>
                 </div>
                 <div className="add-varient-section">
@@ -44,19 +47,23 @@ const AddVarient = (props) => {
                                 setSizeVarient={setSizeVarient}
                                 selectedVarientCategories={varients}
                                 setSelectedVarientCategories={setVarients}
+                                setDeleteVarientConfirmation={setDeleteVarientConfirmation}
+                                deleteConfirmationCB={deleteConfirmationCB}
                             />
                         )
                     })}
-                                    
-                    <Button 
-                        klass="add-varient-btn"
-                        btnType={ButtonTypes.STANDARD_BUTTON}
-                        buttonLabel={LocStrings.addVarients}
-                        onClick={() => {
-                            if(varients.length === varnts.length) return;
-                            setVarients([...varients, ...[varnts[varients.length]]])
-                        }}
-                    />
+                     <div className="add-varient-btn-wrapper">
+                        <Button 
+                            klass="add-varient-btn"
+                            btnType={ButtonTypes.STANDARD_BUTTON}
+                            buttonLabel={LocStrings.addVarients}
+                            onClick={() => {
+                                if(varients.length === varnts.length) return;
+                                setVarients([...varients, ...[varnts[varients.length]]])
+                            }}
+                        />
+                    </div>               
+                    
 
                     <div className="default-selector-wrapper">
                         <div>{LocStrings.defaultVarient}</div>
@@ -82,7 +89,7 @@ const AddVarient = (props) => {
                                 onClick={() => {
                                     props.onSave(
                                         getCombinationObject(colorVarient, sizeVarient),
-                                        JSON.parse(defaultSelectionRef.current.value)
+                                        (defaultSelectionRef.current.value ? JSON.parse(defaultSelectionRef.current.value) : "")
                                     );
                                     props.closeModal();
                                 }}
@@ -92,6 +99,8 @@ const AddVarient = (props) => {
                 </div>
             </div>
         </Modal>
+        {deleteVarientConfirmation ? <DeleteConfirmation deleteConfirmationCB={deleteConfirmationCB} setDeleteVarientConfirmation={setDeleteVarientConfirmation} /> : null}
+        </>
     )
 }
 
@@ -117,39 +126,79 @@ const VarientAdd = (props) => {
     }
 
     const deleteVarienCategoryHandler = () => {
-        setSelectedVarientCategories((prev) => {
-            const newVal = [];
-
-            for(let i = 0; i <prev.length; i++) {
-                if(prev[i] === varientCategory) {
-                    continue;
+        props.deleteConfirmationCB.current = () => {
+            setSelectedVarientCategories((prev) => {
+                const newVal = [];
+    
+                for(let i = 0; i <prev.length; i++) {
+                    if(prev[i] === varientCategory) {
+                        continue;
+                    }
+                    else {
+                        newVal.push(prev[i])
+                    }
                 }
-                else {
-                    newVal.push(prev[i])
-                }
-            }
+    
+                return newVal;
+            });
+    
+            setCurrentVarients('');
+        };
+        props.setDeleteVarientConfirmation(true);
+        return;
 
-            return newVal;
-        });
+        // setSelectedVarientCategories((prev) => {
+        //     const newVal = [];
 
-        setCurrentVarients('');
+        //     for(let i = 0; i <prev.length; i++) {
+        //         if(prev[i] === varientCategory) {
+        //             continue;
+        //         }
+        //         else {
+        //             newVal.push(prev[i])
+        //         }
+        //     }
+
+        //     return newVal;
+        // });
+
+        // setCurrentVarients('');
     }
 
     const onTagRemoveClick = (e) => {
-        const varientToRemove = e.target.getAttribute('id')
+        props.deleteConfirmationCB.current = () => {
+            const varientToRemove = e.target.getAttribute('id')
+        
+            setCurrentVarients((prev) => {
+                let newValues = [];
+                prev.split(':').forEach((p) => {
+                    if(p === varientToRemove) {
+                        return;
+                    }
+                    newValues.push(p);
+                });
+
+                return newValues.join(':')
+            })
+        }
+
+        props.setDeleteVarientConfirmation(true);
+        return;
+
+        // const varientToRemove = e.target.getAttribute('id')
         
 
-        setCurrentVarients((prev) => {
-            let newValues = [];
-            prev.split(':').forEach((p) => {
-                if(p === varientToRemove) {
-                    return;
-                }
-                newValues.push(p);
-            });
+        // setCurrentVarients((prev) => {
+        //     let newValues = [];
+        //     prev.split(':').forEach((p) => {
+        //         if(p === varientToRemove) {
+        //             return;
+        //         }
+        //         newValues.push(p);
+        //     });
 
-            return newValues.join(':')
-        })
+        //     return newValues.join(':')
+        // })
     }
 
     return (
@@ -182,6 +231,35 @@ const DefaultVarientSelection = (props) => {
             {labels.map((o, i) => {return (<option value={JSON.stringify(objects[i])} key={o}>{o}</option>) })}
         </select>
     );
+}
+
+
+const DeleteConfirmation = (props) => {
+
+    const delectClickd = () => {
+        props.deleteConfirmationCB.current();
+        props.deleteConfirmationCB.current = () => {};
+        props.setDeleteVarientConfirmation(false);
+    }
+
+    return (
+        
+        <div className="modal delete-varient-confirmation" >
+            <div className="modal-main">
+                <div className="modal-header">
+                        <span>Delete Varient</span>
+                        <span className="close-button" onClick={() => {props.setDeleteVarientConfirmation(false)}}>x</span>
+                    </div>
+                    <div className="warning-content">
+                        Deleting a varient will remove all its details. Are you sure you want to do this?
+                    </div>
+                    <div className="buttons-wrapper" style={{height: "50px", display: 'flex'}}>
+                        <div className="btn no-button" onClick={() => {props.setDeleteVarientConfirmation(false)}} >No</div>
+                        <div className="btn yes-button" onClick={delectClickd}>Delete</div>
+                    </div>
+            </div>
+        </div>
+    )
 }
 
 export {AddVarient}
